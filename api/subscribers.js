@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import { getClient } from './_db.js';
 
 export default async function handler(req, res) {
   const key = req.query.key;
@@ -7,8 +7,12 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
+  const client = getClient();
+
   try {
-    const { rows } = await sql`SELECT email, created_at FROM subscribers ORDER BY created_at ASC`;
+    await client.connect();
+
+    const { rows } = await client.sql`SELECT email, created_at FROM subscribers ORDER BY created_at ASC`;
 
     const lines = ['email,created_at'];
     for (const row of rows) {
@@ -21,5 +25,7 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error('export error', err);
     return res.status(500).json({ error: 'Internal error' });
+  } finally {
+    await client.end();
   }
 }
