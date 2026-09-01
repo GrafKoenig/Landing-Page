@@ -159,43 +159,45 @@
     line-height:1.8;
   }
 
-  /* ---------- Countdown ---------- */
-  .countdown{
-    display:flex;
-    gap:28px;
-    justify-content:center;
-    margin-bottom:8px;
-  }
-
-  .countdown-unit{
-    display:flex;
-    flex-direction:column;
+  /* ---------- Status indicator ---------- */
+  .status-indicator{
+    display:inline-flex;
     align-items:center;
-    min-width:56px;
+    gap:12px;
+    padding:14px 28px;
+    border:1px solid var(--line);
+    border-radius:999px;
   }
 
-  .countdown-number{
-    font-family:'Cormorant Garamond', serif;
-    font-size:38px;
-    font-weight:500;
-    line-height:1;
+  .status-dot{
+    position:relative;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--gold);
+    flex-shrink:0;
   }
 
-  .countdown-label{
-    font-size:9px;
-    letter-spacing:0.2em;
-    text-indent:0.2em;
-    color:rgba(10,10,10,0.45);
+  .status-dot::after{
+    content:'';
+    position:absolute;
+    inset:-6px;
+    border-radius:50%;
+    border:1px solid var(--gold);
+    animation:status-ripple 2.6s ease-out infinite;
+  }
+
+  @keyframes status-ripple{
+    0%{ transform:scale(0.4); opacity:0.8; }
+    100%{ transform:scale(1.8); opacity:0; }
+  }
+
+  .status-text{
+    font-size:11px;
+    letter-spacing:0.22em;
+    text-indent:0.22em;
     text-transform:uppercase;
-    margin-top:10px;
-  }
-
-  .countdown-divider{
-    width:1px;
-    height:32px;
-    background:var(--line);
-    align-self:center;
-    margin-top:-14px;
+    color:rgba(10,10,10,0.6);
   }
 
   .scroll-cue{
@@ -504,9 +506,7 @@
 
   @media (max-width:560px){
     .hero{ padding:100px 20px 70px; }
-    .countdown{ gap:16px; }
-    .countdown-unit{ min-width:44px; }
-    .countdown-number{ font-size:28px; }
+    .status-indicator{ padding:12px 22px; }
     section{ padding:88px 0; }
     .field-row{ padding-bottom:12px; }
   }
@@ -528,26 +528,9 @@
     <h1 class="headline reveal is-visible">THE NEXT<br>CHAPTER BEGINS</h1>
     <p class="subline reveal is-visible">A new expression of OneWayNation is being forged. Reserved for those who move first.</p>
 
-    <div class="countdown reveal is-visible" id="countdown" aria-live="polite">
-      <div class="countdown-unit">
-        <span class="countdown-number" id="cd-days">00</span>
-        <span class="countdown-label">Days</span>
-      </div>
-      <div class="countdown-divider"></div>
-      <div class="countdown-unit">
-        <span class="countdown-number" id="cd-hours">00</span>
-        <span class="countdown-label">Hours</span>
-      </div>
-      <div class="countdown-divider"></div>
-      <div class="countdown-unit">
-        <span class="countdown-number" id="cd-minutes">00</span>
-        <span class="countdown-label">Minutes</span>
-      </div>
-      <div class="countdown-divider"></div>
-      <div class="countdown-unit">
-        <span class="countdown-number" id="cd-seconds">00</span>
-        <span class="countdown-label">Seconds</span>
-      </div>
+    <div class="status-indicator reveal is-visible">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span class="status-text">In the Making</span>
     </div>
   </div>
 
@@ -648,38 +631,6 @@
   }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
 
   revealEls.forEach(function(el){ observer.observe(el); });
-
-  /* ---------- Countdown ---------- */
-  // Configurable target date for the next drop. Adjust as needed.
-  var dropDate = new Date();
-  dropDate.setDate(dropDate.getDate() + 21);
-
-  var cdDays = document.getElementById('cd-days');
-  var cdHours = document.getElementById('cd-hours');
-  var cdMinutes = document.getElementById('cd-minutes');
-  var cdSeconds = document.getElementById('cd-seconds');
-
-  function pad(n){ return String(n).padStart(2, '0'); }
-
-  function updateCountdown(){
-    var diff = dropDate.getTime() - Date.now();
-    if(diff <= 0){
-      cdDays.textContent = cdHours.textContent = cdMinutes.textContent = cdSeconds.textContent = '00';
-      return;
-    }
-    var days = Math.floor(diff / 86400000);
-    var hours = Math.floor((diff % 86400000) / 3600000);
-    var minutes = Math.floor((diff % 3600000) / 60000);
-    var seconds = Math.floor((diff % 60000) / 1000);
-
-    cdDays.textContent = pad(days);
-    cdHours.textContent = pad(hours);
-    cdMinutes.textContent = pad(minutes);
-    cdSeconds.textContent = pad(seconds);
-  }
-
-  updateCountdown();
-  setInterval(updateCountdown, 1000);
 
   /* ---------- Parallax on hero star ---------- */
   var star = document.getElementById('logo-star');
