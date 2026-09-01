@@ -776,6 +776,17 @@
 
   var step = 'email';
   var clerkReady = null;
+  var pendingEmail = '';
+
+  // Best-effort backup of confirmed signups into our own database
+  // (independent of Clerk, for export via /api/subscribers).
+  function backupSubscriber(email){
+    fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email })
+    }).catch(function(){ /* best-effort only, never blocks the UI */ });
+  }
 
   function isValidEmail(value){
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
@@ -871,6 +882,7 @@
         submitBtn.classList.remove('loading');
         submitBtn.disabled = false;
         step = 'code';
+        pendingEmail = email;
         fieldRow.classList.add('is-hidden');
         codeRow.classList.remove('is-hidden');
         resendBtn.classList.remove('is-hidden');
@@ -882,6 +894,7 @@
         submitBtn.disabled = false;
         var code = err && err.errors && err.errors[0] && err.errors[0].code;
         if(code === 'form_identifier_exists'){
+          backupSubscriber(email);
           showSuccess();
           return;
         }
@@ -912,6 +925,7 @@
         });
       }).then(function(){
         submitBtn.classList.remove('loading');
+        backupSubscriber(pendingEmail);
         showSuccess();
       }).catch(function(err){
         submitBtn.classList.remove('loading');
