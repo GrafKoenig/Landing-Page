@@ -102,8 +102,10 @@
   }
 
   .logo-star{
+    display:block;
     width:46px;
     height:46px;
+    object-fit:contain;
     will-change:transform;
     animation:spin-slow 30s linear infinite, glow-pulse 4s ease-in-out infinite;
     filter:drop-shadow(0 0 6px var(--gold-soft));
@@ -517,14 +519,7 @@
   <canvas id="sparkle-canvas"></canvas>
 
   <div class="logo-wrap" id="logo-wrap">
-    <svg class="logo-star" id="logo-star" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <path fill-rule="evenodd" clip-rule="evenodd" fill="#0A0A0A" d="M50 2
-        C52 30 34 46 4 50
-        C34 54 52 70 50 98
-        C48 70 66 54 96 50
-        C66 46 48 30 50 2 Z
-        M50 41 L59 50 L50 59 L41 50 Z"/>
-    </svg>
+    <img class="logo-star" id="logo-star" src="assets/logo-star.png" alt="OneWayNation" width="339" height="341">
     <span class="brand-name">ONEWAYNATION</span>
   </div>
 
